@@ -11,19 +11,8 @@ Comparing version infos seemed a good use case. See [semver.org](https://semver.
 
 ## Building
 
-- Clone the parent repo
-  ```console
-  $ git clone <repo-url> <repo-dir>
-  ```
-- Use CMake to configure a build system
-  ```console
-  $ cd <repo-dir>/01-SemanticVersioning
-  $ cmake -S . -B <build-dir>
-  ```
-- Build the project
-  ```console
-  $ cmake --build <build-dir>
-  ```
+- see [../README.md](../README.md)
+
 - Run the `semver` tool
   ```console
   $ <build-dir>/semver --help

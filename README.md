@@ -6,7 +6,30 @@ Coding adventures to explore modern C++ features.
 
 This exercise started as an investigation of [three-way comparisons](https://en.cppreference.com/w/cpp/language/operator_comparison#Three-way_comparison) (aka the spaceship operator) in C++20.
 
+For details see [01-SemanticVersioning/README.md](01-SemanticVersioning/README.md)
+
 ## More to come...
+
+## Requirements
+
+- [CMake](https://cmake.org) >= 3.5
+- plus project specific requirements
+
+## Building
+
+- Clone this repository
+  ```console
+  $ git clone https://github.com/gleue/CxxExperiments.git <repo-dir>
+  ```
+- Use CMake to configure a build system
+  ```console
+  $ cd <repo-dir>
+  $ cmake -S . -B <build-dir>
+  ```
+- Build the project
+  ```console
+  $ cmake --build <build-dir>
+  ```
 
 # License
 
