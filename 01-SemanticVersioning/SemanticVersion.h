@@ -18,6 +18,8 @@ class SemanticVersion final {
     struct Identifier {
         std::string_view text;
         bool isNumeric;
+
+        std::strong_ordering operator<=> (const Identifier& rhs) const;
     };
     
 public:

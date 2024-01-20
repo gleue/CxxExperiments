@@ -111,6 +111,16 @@ void SemanticVersion::VersionCore::bump(SemanticVersion::VersionComponent compon
     }
 }
 
+std::strong_ordering SemanticVersion::Identifier::operator<=> (const Identifier& rhs) const {
+    if (isNumeric && !rhs.isNumeric) {
+        return std::strong_ordering::less;
+    }  else if (!isNumeric && rhs.isNumeric) {
+        return std::strong_ordering::greater;
+    } else {
+        return text <=> rhs.text;
+    }
+}
+
 std::strong_ordering SemanticVersion::operator<=> (const SemanticVersion& rhs) const {
 
     // "Precedence refers to how versions are compared to each other when ordered."
@@ -149,19 +159,10 @@ std::strong_ordering SemanticVersion::operator<=> (const SemanticVersion& rhs) c
         if (i >= _preReleaseIdentifiers.size() && i < rhs._preReleaseIdentifiers.size()) return std::strong_ordering::less;
         if (i < _preReleaseIdentifiers.size() && i >= rhs._preReleaseIdentifiers.size()) return std::strong_ordering::greater;
 
-        auto lhi = _preReleaseIdentifiers[i];
-        auto rhi = rhs._preReleaseIdentifiers[i];
+        // 4.1-4.3:
+        auto comp = _preReleaseIdentifiers[i] <=> rhs._preReleaseIdentifiers[i];
 
-        if (lhi.isNumeric && !rhi.isNumeric) {
-            // 4.3:
-            return std::strong_ordering::less;
-        }  else if (!lhi.isNumeric && rhi.isNumeric) {
-            // 4.3:
-            return std::strong_ordering::greater;
-        } else if (lhi.text != rhi.text) {
-            // 4.2/4.1:
-            return lhi.text <=> rhi.text;
-        }
+        if (comp != std::strong_ordering::equal) return comp;
     }
 
     return std::strong_ordering::equal;
