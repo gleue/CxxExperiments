@@ -8,6 +8,12 @@ This exercise started as an investigation of [three-way comparisons](https://en.
 
 For details see [01-SemanticVersioning/README.md](01-SemanticVersioning/README.md)
 
+## 02-RangesAndViews
+
+An investigation of the [Ranges library](https://en.cppreference.com/w/cpp/ranges) in C++20.
+
+For details see [02-RangesAndViews/README.md](02-RangesAndViews/README.md)
+
 ## More to come...
 
 ## Requirements
