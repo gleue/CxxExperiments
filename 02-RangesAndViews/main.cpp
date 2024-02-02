@@ -78,9 +78,6 @@ static void tupleTests() {
     // default is less
     std::ranges::sort(versions);
     printRange(versions, "Tuple versions sorted ascending");
-    // w/ greater comparison
-    // std::ranges::sort(versions, std::greater());
-    // printRange(versions, "Tuple versions sorted descending");
 
     // sort tuples w/ projections
     std::ranges::sort(languageVersions, std::greater(), [](auto const lang){ return std::get<1>(lang); });
