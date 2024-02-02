@@ -1,12 +1,19 @@
 # Ranges and Views
 
-This exercise is as an investigation of the [Ranges library](https://en.cppreference.com/w/cpp/ranges) in C++20.
+This exercise is as an investigation of the [Ranges library](https://en.cppreference.com/w/cpp/ranges) in C++20 and C++23.
 
 ## Requirements
 
-- C++ compiler supporting C++20
+- C++ compiler supporting C++23
 - [CMake](https://cmake.org) >= 3.5
 
 ## Building
 
 - see [../README.md](../README.md)
+
+## Running
+
+- Run the sample tool
+  ```console
+  $ <build-dir>/02-RangesAndViews/ranges_and_views
+  ```

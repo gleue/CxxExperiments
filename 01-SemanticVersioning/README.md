@@ -13,12 +13,12 @@ Comparing version infos seemed a good use case. See [semver.org](https://semver.
 
 - see [../README.md](../README.md)
 
+## Running
+
 - Run the `semver` tool
   ```console
-  $ <build-dir>/semver --help
+  $ <build-dir>/01-SemanticVersioning/semver --help
   ```
-
-## Running
 
 Use `semver --help` to get an overview of the command line options.
 
