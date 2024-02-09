@@ -1,131 +1,156 @@
-// Example from https://en.cppreference.com/w/cpp/ranges
+#include "City.h"
 
-#define _LIBCPP_ENABLE_EXPERIMENTAL
+#include <getopt.h>
 
 #include <algorithm>
-#include <cctype>
+#include <fstream>
 #include <iostream>
 #include <optional>
 #include <ranges>
+#include <sstream>
 #include <string_view>
 #include <vector>
 
-template<std::ranges::input_range V>
-static void printRange(V range, const std::optional<std::string>& heading = std::nullopt) {
-    if (heading) std::cout << heading.value() << ":\n";
-    for (int idx = 0; auto const num: range) std::cout << idx++ << ": " << num << '\n';
-    std::cout << std::endl;
+void usage(const char* argv0) {
+    std::cerr << "Usage\n\n  " << argv0 << " csv-file\n\n";
+    std::cerr << "Options\n\n";
+    std::cerr << "  -h | --help   = Print this help\n" \
+                 "  -H | --header = input file has no header row\n";
+    std::cerr << "Returns\n\n";
+    std::cerr << "  0       = OK\n" \
+                 "  1       = ERROR\n";
+    std::cerr << std::endl;
 }
 
-template<std::ranges::input_range V>
-static void printTuples(V range, const std::optional<std::string>& heading = std::nullopt) {
-    if (heading) std::cout << heading.value() << ":\n";
-    for (int idx = 0; auto const tpl: range) std::cout << idx++ << ": [" << std::get<0>(tpl) << ',' << std::get<1>(tpl) << "]\n";
-    std::cout << std::endl;
-}
+bool hasHeaderRow{true};
+char delimiterChar{';'};
 
-static void integerTests() {
-    // range from container
-    std::vector<int> odds{1,3,5,7,9,11};
-    printRange(odds, "My odd numbers container");
+int parseArguments(int argc, char* argv[]) {
 
-    // range from factory
-    auto factoryOdds = std::views::iota(1,12) | std::views::filter([](auto const num){ return num % 2; });
-    printRange(factoryOdds, "My odd numbers view");
-    printRange(factoryOdds | std::views::reverse, "The reversed odd numbers view");
-
-    // range from adaptor
-    auto threeOdds = std::views::counted(odds.begin(), 3);
-    printRange(threeOdds | std::views::transform([](auto const num){ return num + 1; }), "The first three odd numbers incremented");
-}
-
-static void stringTests() {
-    using std::operator""sv;
-
-    auto csv{"a,b,c,,d,e;f,g"sv};
-    auto fieldViews = csv | std::views::split(',') | std::views::transform([](auto const val){ return std::string_view(val); });
-    printRange(fieldViews, "String view split at commas");
-
-    std::string csvString{"a,b,c,,d,e;f,g"};
-    auto fields = csvString | std::views::split(',') | std::views::transform([](auto const f){ auto sv = std::string_view(f); return sv.empty() ? "-" : sv; });
-    printRange(fields, "String split at commas and replaced when empty");
-
-    auto str{"a1b2d3e4f5g6"};
-    std::string_view strView = str;
-    auto digits = strView | std::views::filter([](auto const c){ return std::isdigit(c); });
-    printRange(digits, "Digits filtered from a string");
-
-    std::string digraphs[]{"ab", "bc", "cd"};
-    printRange(digraphs | std::views::all, "An array of digraphs");
-    auto joined = std::ranges::join_view(digraphs);
-    printRange(joined, "The same digraphs joined into a flat range");
-}   
-
-static void tupleTests() {
-
-    std::tuple<std::string, int> languageVersions[]
-    {
-        {"c", 95}, {"c", 99}, {"c", 11}, {"c++", 98}, {"c++", 11}, {"c++", 14}, {"c++", 17}, {"c++", 20}, {"c++", 23}
+    static const option longOptions[] = {
+        { "help", 0, nullptr, 'h'},
+        { "header", 0, nullptr, 'H'},
+        { "delim", 0, nullptr, 'D'},
+        { nullptr, 0, nullptr, 0 },
     };
-    printTuples(languageVersions | std::views::all, "The original array of tuples");
 
-    // sort tuples w/ projections
-    std::ranges::sort(languageVersions, std::greater(), [](auto const lang){ return std::get<1>(lang); });
-    printTuples(languageVersions | std::views::all, "Tuples sorted by descending version");
+    int opt = -1;
 
-    // sort extracted tuple elements
-    auto versions = languageVersions | std::views::elements<1>;
-    // default is less
-    std::ranges::sort(versions);
-    printRange(versions, "Tuple versions sorted ascending");
+    while ((opt = getopt_long(argc, argv, "hHD:", longOptions, nullptr)) > 0) {
+        switch (opt) {
+            case 'h':
+                usage(argv[0]);
+                exit(0);
+            case 'H':
+                hasHeaderRow = false;
+                break;
+            case 'D':
+                delimiterChar = optarg[0];
+                break;
+            case '?':
+                usage(argv[0]);
+                exit(1);
+        }
+    }
 
-    // sort tuples w/ projections
-    std::ranges::sort(languageVersions, std::greater(), [](auto const lang){ return std::get<1>(lang); });
-    printTuples(languageVersions | std::views::all, "Tuples sorted by descending version w/ closure");
-
-    // sort tuples w/ projections
-    std::ranges::sort(languageVersions, {}, [](auto const lang){ return std::get<0>(lang); });
-    printTuples(languageVersions | std::views::all, "Tuples sorted by ascending name w/ closure");
+    return optind;
 }
 
-struct Language {
-    std::string name;
-    int version;
+std::optional<std::vector<City>> readCitiesFromCSV(const std::string& filepath, bool hasHeader = false, char delim = ';') {
 
-    friend std::ostream& operator<<(std::ostream& ostr, const Language& lang);
-};
+    std::ifstream csvstream(filepath);
 
-std::ostream& operator<<(std::ostream& ostr, const Language& lang) {
-    ostr << lang.name << " @ " << lang.version;
-    return ostr;
+    if (!csvstream.good()) return std::nullopt;
+
+    std::vector<City> cities;
+
+    bool headerSeen = !hasHeader;
+    while (!csvstream.eof()) {
+        std::string csvline;
+
+        if (!std::getline(csvstream, csvline)) break;
+
+        // Skip header (if necessary)
+        if (!headerSeen) {
+            headerSeen = true;
+            continue;
+        }
+
+        // Parse data lines
+        auto fields = csvline | std::views::split(delimiterChar) | std::views::transform([](auto const f){ return std::string_view(f); });
+        auto name = fields.front();
+        auto state = std::next(std::ranges::begin(fields), 16);
+
+        unsigned population = 0;
+        {
+            auto populationString = std::string(*std::next(std::ranges::begin(fields), 11));
+            std::istringstream istr(populationString);
+            istr >> population;
+        }
+
+        float area = .0;
+        {
+            auto areaString = std::string(*std::next(std::ranges::begin(fields), 12));
+            std::istringstream istr(areaString);
+            istr >> area;
+        }
+
+        unsigned since = 0;
+        {
+            auto sinceString = std::string(*std::next(std::ranges::begin(fields), 15));
+            std::istringstream istr(sinceString);
+            istr >> since;
+        }
+
+        cities.push_back(City{ std::string(name), population, area, since, std::string(*state)});
+    }
+
+    return cities;
 }
 
-static void structTests() {
-    std::vector<Language> languageVersions
-    {
-        {"c", 95}, {"c", 99}, {"c", 11}, {"c++", 98}, {"c++", 11}, {"c++", 14}, {"c++", 17}, {"c++", 20}, {"c++", 23}
-    };
-    printRange(languageVersions | std::views::all, "The original languages");
+int main(int argc, char* argv[]) {
 
-    // sort structs w/ projection
-    std::ranges::sort(languageVersions, {}, &Language::version );
-    printRange(languageVersions | std::views::all, "Languages sorted by ascending version w/ projection");
+    auto index = parseArguments(argc, argv);
 
-    // sort structs w/ projections
-    std::ranges::sort(languageVersions, std::greater(), [](auto const lang){ return lang.version; } );
-    printRange(languageVersions | std::views::all, "Languages sorted by descending version w/ closure projection");
+    if (argc - optind == 0) {
+        usage(argv[0]);
+        return 1;
+    }
 
-    auto modernLanguages = languageVersions | std::views::filter([](auto const lang){ return lang.version <= 23; });
-    printRange(modernLanguages, "Filtered languages");
-    languageVersions.push_back({"ada", 05});
-    languageVersions.push_back({"fortran", 77});
-    printRange(modernLanguages, "Filtered languages w/ extra element(s) in underlying container");
-    printRange(languageVersions | std::views::all, "All languages");
-}
+    auto citiesOpt = readCitiesFromCSV(argv[optind], hasHeaderRow, delimiterChar);
+    if (!citiesOpt) return 1;
 
-int main() {
-    integerTests();
-    stringTests();
-    tupleTests();
-    structTests();
+    auto cities = citiesOpt.value();
+    std::cout << "All cities:\n";
+    for (auto const city: cities) std::cout << city << std::endl;
+
+    // Check if all have >= 100.000 inhabitants:
+    //
+    if (std::ranges::all_of(cities, [](auto const c){ return c.population >= 100'000; })) {
+        std::cout << "\nAll have at least 100k inhabitants\n";
+    }
+
+    // Cities by population
+    //
+    std::ranges::sort(cities, std::ranges::greater(), &City::population);
+
+    auto largeCities = cities | std::views::filter([](auto const c){ return c.population >= 1'000'000; });
+    std::cout << "\nLarge cities (>= 1M inhabitants):\n";
+    for (auto const city: largeCities) std::cout << city.name << ": " << city.population << std::endl;
+
+    auto mediumCities = cities | std::views::drop_while([](auto const c){ return c.population >= 1'000'000; }) | std::views::take_while([](auto const c){ return c.population >= 200'000; });
+    std::cout << "\nMedium cities (< 1M and >= 200k inhabitants):\n";
+    for (auto const city: mediumCities) std::cout << city.name << ": " << city.population << std::endl;
+
+    auto densities = cities | std::views::transform([](auto const c)->float{ return float(c.population)/float(c.area); });
+    std::cout << "\nPopulation density per city:\n";
+    for (auto const [city, density]: std::views::zip(cities, densities)) std::cout << city.name << ": " << density << " inh/sqmkm" << std::endl;
+
+    // 5 oldest cities:
+    //
+    std::ranges::sort(cities, std::ranges::less(), &City::since);
+
+    auto topFiveOldest = std::views::counted(cities.begin(), 5);
+    std::cout << "\nTop 5 oldest cities:\n";
+    for (auto const city: topFiveOldest) std::cout << city.name << ": " << city.since << std::endl;
 }
