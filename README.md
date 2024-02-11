@@ -32,6 +32,11 @@ For details see [02-RangesAndViews/README.md](02-RangesAndViews/README.md)
   $ cd <repo-dir>
   $ cmake -S . -B <build-dir>
   ```
+  Alternatively using GCC 13 installed via [Homebrew](https://brew.sh) on macOS:
+  ```console
+  $ cmake -S . -B ./build -D CMAKE_C_COMPILER=$(brew --prefix gcc)/bin/gcc-13 -D CMAKE_CXX_COMPILER=$(brew --prefix gcc)/bin/g++-13
+  ```
+
 - Build the project
   ```console
   $ cmake --build <build-dir>
