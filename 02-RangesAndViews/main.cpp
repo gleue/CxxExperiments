@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <numeric>
 #include <optional>
 #include <ranges>
 #include <sstream>
@@ -127,8 +128,13 @@ int main(int argc, char* argv[]) {
     // Check if all have >= 100.000 inhabitants:
     //
     if (std::ranges::all_of(cities, [](auto const c){ return c.population >= 100'000; })) {
-        std::cout << "\nAll have at least 100k inhabitants\n";
+        std::cout << "\nAll cities have at least 100k inhabitants\n";
     }
+
+    // Sum total population
+    //
+    auto total = std::ranges::fold_left(cities, 0, [](unsigned total, const City& city)-> unsigned { return total += city.population; });
+    std::cout << "\nTotal population: " << total << std::endl;
 
     // Cities by population
     //
@@ -153,4 +159,17 @@ int main(int argc, char* argv[]) {
     auto topFiveOldest = std::views::counted(cities.begin(), 5);
     std::cout << "\nTop 5 oldest cities:\n";
     for (auto const city: topFiveOldest) std::cout << city.name << ": " << city.since << std::endl;
+
+    // State with cities in them
+    //
+    std::vector<std::string> statesWithCities;
+    auto states = cities | std::views::transform([](auto const city)->std::string { return city.state; });
+    std::ranges::copy_if(states, std::back_inserter(statesWithCities), [](auto const s){ return !s.empty(); });
+    std::ranges::sort(statesWithCities);
+    auto toErase = std::ranges::unique(statesWithCities);
+    statesWithCities.erase(toErase.begin(), toErase.end());
+
+    std::cout << "\nStates with cities:\n";
+    // for (auto const state: statesWithCities) std::cout << state << std::endl;
+    std::ranges::copy(statesWithCities, std::ostream_iterator<std::string>(std::cout, "\n"));
 }

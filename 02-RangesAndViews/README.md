@@ -4,7 +4,7 @@ This exercise is as an investigation of the [Ranges library](https://en.cpprefer
 
 ## Requirements
 
-- C++ compiler supporting C++23
+- C++ compiler supporting C++23, e.g. Gcc 13
 - [CMake](https://cmake.org) >= 3.5
 
 ## Building
@@ -16,4 +16,9 @@ This exercise is as an investigation of the [Ranges library](https://en.cpprefer
 - Run the sample tool
   ```console
   $ <build-dir>/02-RangesAndViews/ranges_and_views
+  ```
+
+- Run the cities program
+  ```console
+  $ <build-dir>/02-RangesAndViews/cities data/cities.csv
   ```
