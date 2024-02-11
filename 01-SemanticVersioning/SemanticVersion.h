@@ -12,6 +12,7 @@
 #include <ostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 class SemanticVersion final {
 

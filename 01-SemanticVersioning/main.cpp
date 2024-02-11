@@ -1,6 +1,7 @@
 #include "SemanticVersion.h"
 #include "VersionRange.h"
 
+#include <cstring>
 #include <iostream>
 #include <getopt.h>
 
