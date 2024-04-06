@@ -14,6 +14,12 @@ An investigation of the [Ranges library](https://en.cppreference.com/w/cpp/range
 
 For details see [02-RangesAndViews/README.md](02-RangesAndViews/README.md)
 
+## 03-MoveSematics
+
+An investigation of move semantics especially in C++20 and later.
+
+For details see [03-MoveSemantics/README.md](03-MoveSemantics/README.md)
+
 ## More to come...
 
 ## Requirements
