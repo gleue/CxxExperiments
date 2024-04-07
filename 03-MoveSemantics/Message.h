@@ -91,7 +91,7 @@ public:
 
     // Output
     friend std::ostream& operator<< (std::ostream& ostr, const Message& msg) {
-        ostr << static_cast<BaseMessage>(msg) << ": " << msg.body.size() << " bytes [ " << msg.body << ']';
+        ostr << static_cast<const BaseMessage&>(msg) << ": " << msg.body.size() << " bytes [ " << msg.body << ']';
         return ostr;
     }
 
