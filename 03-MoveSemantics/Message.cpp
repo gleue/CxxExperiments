@@ -40,6 +40,6 @@ BaseMessage& BaseMessage::operator= (BaseMessage&& msg) {
 }
 
 std::ostream& operator<< (std::ostream& ostr, const BaseMessage& msg) {
-    ostr << "message " << msg.id << " @ " << (msg.recipient.empty() ? "-" : msg.recipient);
+    ostr << "id " << msg.id << " @ " << (msg.recipient.empty() ? "-" : msg.recipient);
     return ostr;
 }

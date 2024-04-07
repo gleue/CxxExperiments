@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#define LOG_FUNCTION std::cout << " * " << __PRETTY_FUNCTION__ << "\n"
+#define LOG_FUNCTION std::cout << "* " << __PRETTY_FUNCTION__ << "\n"
 
 class BaseMessage {
 
@@ -14,21 +14,30 @@ class BaseMessage {
 protected:
 
     std::size_t id;
-    std::string recipient{""};
+    std::string recipient{};
 
 public:
 
     // Default ctor: set unique message ID
+    //
+    // Needed since we also have a move constructor.
     BaseMessage(): id(++BaseMessage::lastID) { LOG_FUNCTION; }
 
     // Custom ctor: set unique message ID, custom recipient
     explicit BaseMessage(const std::string& rcpt): id(++BaseMessage::lastID), recipient(std::move(rcpt)) { LOG_FUNCTION; }
 
     // Copy operations
+    //
+    // Have to be user-declared, too, since we also
+    // have user-declared move operations (see below),
+    // and they would otherwise be deleted.
     BaseMessage(const BaseMessage& msg);
     BaseMessage& operator= (const BaseMessage& msg);
 
     // Move operations
+    //
+    // They are both user-declared since we want to
+    // reset the moved from message's members.
     BaseMessage(BaseMessage&& msg);
     BaseMessage& operator= (BaseMessage&& msg);
 
@@ -51,9 +60,13 @@ std::ostream& operator<< (std::ostream& ostr, const std::array<T, N>& arr) {
 template<class T, std::size_t N>
 class Message: public BaseMessage {
 
+    std::array<T, N> body{};
+
 public:
 
     // Default ctor
+    //
+    // Needed since we also have a move constructor.
     Message(): BaseMessage() { LOG_FUNCTION; }
 
     // Custom ctor: set custom recipient and body
@@ -64,22 +77,29 @@ public:
     }
 
     // Copy operations
+    //
+    // Have to be user-declared, too, since we also
+    // have user-declared move operations (see below),
+    // and they would otherwise be deleted.
     Message(const Message& msg): BaseMessage(msg), body(msg.body) { LOG_FUNCTION; }
     Message& operator= (const Message& msg) {
-        LOG_FUNCTION;
         BaseMessage::operator=(msg);
+        LOG_FUNCTION;
         body = msg.body;
         return *this;
     }
 
     // Move operations
+    //
+    // They are both user-declared since we want to
+    // reset the message body in the moved from message.
     Message(Message&& msg): BaseMessage(std::move(msg)), body(std::move(msg.body)) {
         LOG_FUNCTION;
         msg.body = std::array<T, N>{};
     }
     Message& operator= (Message&& msg) {
-        LOG_FUNCTION;
         BaseMessage::operator=(msg);
+        LOG_FUNCTION;
         body = std::move(msg.body);
         msg.body = std::array<T, N>{};
         return *this;
@@ -94,8 +114,4 @@ public:
         ostr << static_cast<const BaseMessage&>(msg) << ": " << msg.body.size() << " bytes [ " << msg.body << ']';
         return ostr;
     }
-
-private:
-
-    std::array<T, N> body{};
 };
