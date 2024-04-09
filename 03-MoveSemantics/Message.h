@@ -24,7 +24,8 @@ public:
     BaseMessage(): id(++BaseMessage::lastID) { LOG_FUNCTION; }
 
     // Custom ctor: set unique message ID, custom recipient
-    explicit BaseMessage(const std::string& rcpt): id(++BaseMessage::lastID), recipient(std::move(rcpt)) { LOG_FUNCTION; }
+    explicit BaseMessage(const std::string& rcpt): id(++BaseMessage::lastID), recipient(rcpt) { LOG_FUNCTION; }
+    explicit BaseMessage(std::string&& rcpt): id(++BaseMessage::lastID), recipient(std::move(rcpt)) { LOG_FUNCTION; }
 
     // Copy operations
     //
@@ -70,8 +71,12 @@ public:
     Message(): BaseMessage() { LOG_FUNCTION; }
 
     // Custom ctor: set custom recipient and body
-    Message(const std::string& rcpt, const std::array<T, N>& bdy):
-        BaseMessage(rcpt),
+    //
+    // Since we'd need a total of four constructors to
+    // cover all combinations of lvalue and rvalue references
+    // we pass arguments by value and move them.
+    Message(std::string rcpt, std::array<T, N> bdy):
+        BaseMessage(std::move(rcpt)),
         body(std::move(bdy)) {
         LOG_FUNCTION;
     }
