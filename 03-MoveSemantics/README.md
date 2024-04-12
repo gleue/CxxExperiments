@@ -17,6 +17,12 @@ Run the sample tool
 ```console
 $ <build-dir>/03-MoveSemantics/move_semantics
 ```
+
+- Run the messages program
+  ```console
+  $ <build-dir>/03-MoveSemantics/messages
+  ```
+
 ## Resources
 
 - cppreference.com: [Move constructors](https://en.cppreference.com/w/cpp/language/move_constructor)

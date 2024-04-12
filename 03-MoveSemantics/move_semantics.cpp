@@ -1,60 +1,49 @@
-#include "Message.h"
+#include <cstdio>
+#include <source_location>
+#include <utility>
 
-#include <array>
-#include <deque>
-#include <iostream>
-#include <string>
+void print(const std::source_location &location = std::source_location::current()) noexcept {
+    std::puts(location.function_name());
+}
+
+struct Lifetime {
+    Lifetime() noexcept { print(); }
+    Lifetime(int) noexcept { print(); }
+    Lifetime(const Lifetime &) noexcept { print(); }
+    Lifetime(Lifetime &&) noexcept { print(); }
+    
+    ~Lifetime() noexcept { print(); }
+
+    Lifetime& operator=(const Lifetime &) noexcept { print(); return *this; }
+    Lifetime& operator=(Lifetime &&) noexcept { print(); return *this; }
+};
+
+void callByValue(Lifetime lt) {
+    auto lifetime = std::move(lt);
+}
+
+void callByConstRef(const Lifetime &lt) {
+    auto lifetime = lt;
+}
+
+void callByRValueRef(Lifetime &&lt) {
+    auto lifetime = std::move(lt);
+}
 
 int main() {
+    auto lt = Lifetime(1);
 
-    // Copied/moved Messages
+    std::puts("\nValue:");
+    callByValue(lt);
 
-    std::cout << "\nDefault construction:\n";
-    Message<char, 0> emptyMsg;
-    std::cout << "\n=> Empty message: " << emptyMsg << std::endl;
+    std::puts("\nConst Ref:");
+    callByConstRef(lt);
 
-    std::cout << "\nCustom construction:\n";
-    std::array<int, 10> msgBody{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    Message<int, 10> originalMessage("tim", msgBody);
-    std::cout << "\n=> Original message: " << originalMessage << std::endl;
+    std::puts("\nRvalue Ref:");
+    callByRValueRef(std::move(lt));
 
-    std::cout << "\nCopy construction:\n";
-    auto copiedMessage{originalMessage};
-    std::cout << "\n=> Copied message: " << copiedMessage << std::endl;
-    std::cout << "-> Original message: " << originalMessage << std::endl;
+    std::puts("\nRvalue Temp:");
+    callByRValueRef(Lifetime(2));
 
-    std::cout << "\nDefault construction:\n";
-    decltype(originalMessage) copyAssignedMessage;
-    std::cout << "\nCopy assigment:\n";
-    copyAssignedMessage = originalMessage;
-    std::cout << "\n=> Copy assigned message: " << copyAssignedMessage << std::endl;
-    std::cout << "-> Original message: " << originalMessage << std::endl;
-
-    std::cout << "\nMove construction:\n";
-    auto movedMessage{std::move(originalMessage)};
-    std::cout << "\n=> Moved message: " << movedMessage << std::endl;
-    std::cout << "-> Original message:" << originalMessage << std::endl;
-
-    std::cout << "\nRe-initialization of moved from object:\n";
-    std::array<int, 10> altBody{9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
-    originalMessage.resetID();
-    originalMessage.setRecipient(std::move("foo"));
-    originalMessage.setBody(std::move(altBody));
-    std::cout << "=> Moved from message: " << originalMessage << std::endl;
-
-    // Message Queues
-
-    std::deque<Message<int, 10>> messageQueue{};
-
-    std::cout << "\nEnqueing messages:\n";
-    messageQueue.emplace_back(std::move(movedMessage));
-    std::cout << "\n=> Enqueued message (moved): " << movedMessage << std::endl << std::endl;
-    messageQueue.emplace_back(originalMessage);
-    std::cout << "\n=> Enqueued message (copied): " << originalMessage << std::endl;
-
-    std::cout << "\nDequeing messages:\n";
-    auto firstMessage = messageQueue.front(); messageQueue.pop_front();
-    std::cout << "\n=> Dequeued first message: " << firstMessage << std::endl << std::endl;
-    auto nextMessage = messageQueue.front(); messageQueue.pop_front();
-    std::cout << "\n-> Dequeued next message: " << nextMessage << std::endl;
+    std::puts("");
 }
