@@ -20,6 +20,12 @@ An investigation of move semantics especially in C++20 and later.
 
 For details see [03-MoveSemantics/README.md](03-MoveSemantics/README.md)
 
+## 04-Initialization
+
+How to provide initial values to variables during construction.
+
+For details see [04-Initialization/README.md](04-Initialization/README.md)
+
 ## More to come...
 
 ## Requirements
