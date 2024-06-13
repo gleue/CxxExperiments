@@ -47,7 +47,7 @@ For details see [04-Initialization/README.md](04-Initialization/README.md)
   Alternatively using GCC 13 installed via [Homebrew](https://brew.sh) on macOS:
   ```console
   $ brew install gcc
-  $ cmake -S . -B ./build -D CMAKE_C_COMPILER=$(brew --prefix gcc)/bin/gcc-13 -D CMAKE_CXX_COMPILER=$(brew --prefix gcc)/bin/g++-13
+  $ cmake -S . -B ./build -D CMAKE_C_COMPILER=$(brew --prefix gcc)/bin/gcc-14 -D CMAKE_CXX_COMPILER=$(brew --prefix gcc)/bin/g++-14
   ```
 
 - Build the project
