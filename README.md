@@ -26,6 +26,12 @@ How to provide initial values to variables during construction.
 
 For details see [04-Initialization/README.md](04-Initialization/README.md)
 
+## 05-SellingWood
+
+Kata from [leetcode.com](https://leetcode.com/problems/selling-pieces-of-wood/).
+
+For details see [05-SellingWood/README.md](05-SellingWood/README.md)
+
 ## More to come...
 
 ## Requirements
