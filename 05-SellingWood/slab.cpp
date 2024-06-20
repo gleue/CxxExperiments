@@ -3,93 +3,87 @@
 #include <algorithm>
 
 long long Slab::findOptimalPartition(std::vector<std::vector<int>>& prices) const {
-    return std::max(partitionHorizontally(prices), partitionVertically(prices));
-}
-
-long long Slab::partitionHorizontally(std::vector<std::vector<int>>& prices) const {
     long long money{0};
 
     for (const auto& price: prices) {
-        auto priceHeight{price[0]};
-        auto priceWidth{price[1]};
-        auto pricePrice{price[2]};
-
-        // Slab too narrow -> skip
-        if (width < priceWidth) continue;
-
-        // Slab exact width -> check height
-        if (width == priceWidth) {
-            // Slab not tall enough -> skip
-            if (height < priceHeight) continue;
-
-            // Slab exact height -> update price
-            if (height == priceHeight) {
-                money = std::max(money, static_cast<long long>(pricePrice));
-            }
-            // Slab too tall -> split and examine rest
-            else {
-                decltype(money) moneyR{0};
-
-                if (auto rest = splitHorizontally(priceHeight); rest) moneyR = rest.value().findOptimalPartition(prices);
-
-                money = std::max({money, moneyR + pricePrice, moneyR + pricePrice});
-            }
-        }
-        // Slab is too wide -> split vertically
-        else {
-            const auto& rest = splitVertically(priceWidth);
-
-            decltype(money) moneyS = Slab(priceWidth, height).partitionVertically(prices);
-            decltype(money) moneyR = rest ? rest.value().findOptimalPartition(prices) : 0;
-
-            money = std::max(money, moneyS + moneyR);
-        }
+        money = std::max({money, partitionWidth(price, prices), partitionHeight(price, prices)});
     }
 
     return money;
 }
 
-long long Slab::partitionVertically(std::vector<std::vector<int>>& prices) const {
-    long long money{0};
+long long Slab::partitionWidth(const std::vector<int>& price, std::vector<std::vector<int>>& prices) const {
+    auto priceHeight{price[0]};
+    auto priceWidth{price[1]};
+    auto pricePrice{price[2]};
 
-    for (const auto& price: prices) {
-        auto priceHeight{price[0]};
-        auto priceWidth{price[1]};
-        auto pricePrice{price[2]};
+    // Slab too narrow -> skip
+    if (width < priceWidth) return 0;
 
-        // Slab too short -> skip
-        if (height < priceHeight) continue;
+    // Slab exact width -> check height
+    if (width == priceWidth) {
+        // Slab not tall enough -> skip
+        if (height < priceHeight) return 0;
 
-        // Slab exact height -> check width
+        // Slab exact height -> update price
         if (height == priceHeight) {
-            // Slab not wide enough -> skip
-            if (width < priceWidth) continue;
-
-            // Slab wide enough -> update price
-            if (width == priceWidth) {
-                money = std::max(money, static_cast<long long>(pricePrice));
-            }
-            // Slab too wide -> split and examine rest
-            else {
-                decltype(money) moneyR{0};
-
-                if (auto rest = splitVertically(priceWidth); rest) moneyR = rest.value().findOptimalPartition(prices);
-
-                money = std::max({money, moneyR + pricePrice, moneyR + pricePrice});
-            }
+            return pricePrice;
         }
-        // Slab is too tall -> split horizontally
+        // Slab too tall -> split and examine rest
         else {
-            const auto& rest = splitHorizontally(priceHeight);
+            long long moneyR{0};
 
-            decltype(money) moneyS = Slab(width, priceHeight).partitionHorizontally(prices);
-            decltype(money) moneyR = rest ? rest.value().findOptimalPartition(prices) : 0;
+            if (auto rest = splitHorizontally(priceHeight); rest) moneyR = rest.value().findOptimalPartition(prices);
 
-            money = std::max(money, moneyS + moneyR);
+            return std::max(moneyR + pricePrice, moneyR + pricePrice);
         }
     }
+    // Slab is too wide -> split vertically
+    else {
+        const auto& rest = splitVertically(priceWidth);
 
-    return money;
+        long long moneyS = Slab(priceWidth, height).partitionHeight(price, prices);
+        long long moneyR = rest ? rest.value().findOptimalPartition(prices) : 0;
+
+        return moneyS + moneyR;
+    }
+}
+
+long long Slab::partitionHeight(const std::vector<int>& price, std::vector<std::vector<int>>& prices) const {
+    auto priceHeight{price[0]};
+    auto priceWidth{price[1]};
+    auto pricePrice{price[2]};
+
+    // Slab too short -> skip
+    if (height < priceHeight) return 0;
+
+    // Slab exact height -> check width
+    if (height == priceHeight) {
+        // Slab not wide enough -> skip
+        if (width < priceWidth) return 0;
+
+        // Slab wide enough -> update price
+        if (width == priceWidth) {
+            return pricePrice;
+        }
+        // Slab too wide -> split and examine rest
+        else {
+            long long moneyR{0};
+
+            if (auto rest = splitVertically(priceWidth); rest) moneyR = rest.value().findOptimalPartition(prices);
+
+            return std::max(moneyR + pricePrice, moneyR + pricePrice);
+        }
+    }
+    // Slab is too tall -> split horizontally
+    else {
+        const auto& rest = splitHorizontally(priceHeight);
+
+        auto moneyS = Slab(width, priceHeight).partitionWidth(price, prices);
+        auto moneyR = rest ? rest.value().findOptimalPartition(prices) : 0;
+
+        return moneyS + moneyR;
+    }
 }
 
 std::optional<Slab> Slab::splitVertically(int x) const {
