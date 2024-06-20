@@ -1,30 +1,28 @@
 #include "slab.h"
 
 #include <algorithm>
+#include <ranges>
 
 long long Slab::findOptimalPartition(std::vector<std::vector<int>>& prices) const {
     long long money{0};
 
-    for (const auto& price: prices) {
-        money = std::max({money, partitionWidth(price, prices), partitionHeight(price, prices)});
+    for (const auto& price: std::ranges::views::filter(prices, [&](auto price){ return price[0] <=height && price[1] <= width; })) {
+        money = std::max({money, cut(price, prices)});
     }
 
     return money;
 }
 
-long long Slab::partitionWidth(const std::vector<int>& price, std::vector<std::vector<int>>& prices) const {
+long long Slab::cut(const std::vector<int>& price, std::vector<std::vector<int>>& prices) const {
     auto priceHeight{price[0]};
     auto priceWidth{price[1]};
     auto pricePrice{price[2]};
 
-    // Slab too narrow -> skip
-    if (width < priceWidth) return 0;
+    // Slab too small -> skip
+    if (width < priceWidth || height < priceHeight) return 0;
 
     // Slab exact width -> check height
     if (width == priceWidth) {
-        // Slab not tall enough -> skip
-        if (height < priceHeight) return 0;
-
         // Slab exact height -> update price
         if (height == priceHeight) {
             return pricePrice;
@@ -40,47 +38,15 @@ long long Slab::partitionWidth(const std::vector<int>& price, std::vector<std::v
     }
     // Slab is too wide -> split vertically
     else {
-        const auto& rest = splitVertically(priceWidth);
+        long long moneyS{pricePrice};
 
-        long long moneyS = Slab(priceWidth, height).partitionHeight(price, prices);
-        long long moneyR = rest ? rest.value().findOptimalPartition(prices) : 0;
-
-        return moneyS + moneyR;
-    }
-}
-
-long long Slab::partitionHeight(const std::vector<int>& price, std::vector<std::vector<int>>& prices) const {
-    auto priceHeight{price[0]};
-    auto priceWidth{price[1]};
-    auto pricePrice{price[2]};
-
-    // Slab too short -> skip
-    if (height < priceHeight) return 0;
-
-    // Slab exact height -> check width
-    if (height == priceHeight) {
-        // Slab not wide enough -> skip
-        if (width < priceWidth) return 0;
-
-        // Slab wide enough -> update price
-        if (width == priceWidth) {
-            return pricePrice;
+        // Slab too tall -> split horizontally and examine rest
+        if (height > priceHeight) {
+            if (auto bottomRest = Slab(priceWidth, height).splitHorizontally(priceHeight); bottomRest) moneyS += bottomRest.value().findOptimalPartition(prices);
         }
-        // Slab too wide -> split and examine rest
-        else {
-            long long moneyR{0};
 
-            if (auto rest = splitVertically(priceWidth); rest) moneyR = rest.value().findOptimalPartition(prices);
-
-            return moneyR + pricePrice;
-        }
-    }
-    // Slab is too tall -> split horizontally
-    else {
-        const auto& rest = splitHorizontally(priceHeight);
-
-        auto moneyS = Slab(width, priceHeight).partitionWidth(price, prices);
-        auto moneyR = rest ? rest.value().findOptimalPartition(prices) : 0;
+        const auto& rightRest = splitVertically(priceWidth);
+        long long moneyR = rightRest ? rightRest.value().findOptimalPartition(prices) : 0;
 
         return moneyS + moneyR;
     }

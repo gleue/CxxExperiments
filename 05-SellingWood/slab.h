@@ -19,8 +19,7 @@ public:
 
 private:
 
-    long long partitionWidth(const std::vector<int>& price, std::vector<std::vector<int>>& prices) const;
-    long long partitionHeight(const std::vector<int>& price, std::vector<std::vector<int>>& prices) const;
+    long long cut(const std::vector<int>& price, std::vector<std::vector<int>>& prices) const;
 
     /// Splits this slab vertically at given x position (0 = left) returning the remaining rest-slab if any.
     std::optional<Slab> splitVertically(int x) const;
