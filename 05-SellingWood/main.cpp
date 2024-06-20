@@ -39,4 +39,22 @@ int main() {
 
         std::cout << maxMoney << '\n';
     }
+    std::puts("Testcase 31: ");
+    {
+        std::vector<std::vector<int>> prices{{10,1,4},{19,2,26},{3,4,27},{5,2,2},{9,4,13},{16,6,1},{4,5,30},{18,7,22},{19,3,4},{10,5,18},{19,1,15},{7,5,23},{10,6,30},{11,1,1},{9,2,12},{13,2,8},{7,3,4},{1,5,18},{7,7,14}};
+
+        Solution solution;
+        auto maxMoney = solution.sellingWood(20, 7, prices);
+
+        std::cout << maxMoney << '\n';
+    }
+    std::puts("Testcase 33: ");
+    {
+        std::vector<std::vector<int>> prices{{11,1,11},{12,2,18},{13,2,7},{5,1,2},{18,1,8},{1,1,15},{19,1,26},{3,2,30},{3,1,14},{17,1,1},{1,2,7},{12,1,1},{7,2,23},{7,1,18},{8,2,14},{10,2,7}};
+
+        Solution solution;
+        auto maxMoney = solution.sellingWood(19, 2, prices);
+
+        std::cout << maxMoney << '\n';
+    }
 }
