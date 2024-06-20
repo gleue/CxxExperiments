@@ -35,7 +35,7 @@ long long Slab::partitionWidth(const std::vector<int>& price, std::vector<std::v
 
             if (auto rest = splitHorizontally(priceHeight); rest) moneyR = rest.value().findOptimalPartition(prices);
 
-            return std::max(moneyR + pricePrice, moneyR + pricePrice);
+            return moneyR + pricePrice;
         }
     }
     // Slab is too wide -> split vertically
@@ -72,7 +72,7 @@ long long Slab::partitionHeight(const std::vector<int>& price, std::vector<std::
 
             if (auto rest = splitVertically(priceWidth); rest) moneyR = rest.value().findOptimalPartition(prices);
 
-            return std::max(moneyR + pricePrice, moneyR + pricePrice);
+            return moneyR + pricePrice;
         }
     }
     // Slab is too tall -> split horizontally
