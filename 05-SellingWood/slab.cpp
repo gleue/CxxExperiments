@@ -3,17 +3,68 @@
 #include <algorithm>
 #include <ranges>
 
+namespace {
+    inline int sizeToIndex(int w, int h) { return (h << 8) + w; }
+}
+
+std::unordered_map<int, long long> Slab::cache{};
+
+long long Slab::findOptimalCuts(const std::vector<std::vector<int>>& prices) const {
+    if (auto item = cache.find(sizeToIndex(width, height)); item != cache.end()) {
+        return item->second;
+    }
+
+    long long money{0};
+
+    if (auto match = std::find_if(prices.begin(), prices.end(), [&](const auto& price){ return price[0] == height && price[1] == width; }); match != prices.end()) {
+        money = (*match)[2];
+    }
+    
+    cache[sizeToIndex(width, height)] = std::max({money, width > 1 ? cutVertically(prices) : 0, height > 1 ? cutHorizontally(prices) : 0});
+    return cache[sizeToIndex(width, height)];
+}
+
+long long Slab::cutVertically(const std::vector<std::vector<int>>& prices) const {
+    long long money{0};
+
+    for (int w = 1; w <= width/2 + width%2; w++) {
+        Slab left(w, height);
+        auto right{splitVertically(w)};
+
+        auto sizeFilterL = [&](auto price){ return price[0] <=left.getHeight() && price[1] <= left.getWidth(); };
+        auto sizeFilterR = [&](auto price){ return price[0] <=right.value().getHeight() && price[1] <= right.value().getWidth(); };
+
+        money = std::max(money, left.findOptimalCuts(prices) + (right ? right.value().findOptimalCuts(prices) : 0));
+    }
+    return money;
+}
+
+long long Slab::cutHorizontally(const std::vector<std::vector<int>>& prices) const {
+    long long money{0};
+
+    for (int h = 1; h <= height/2 + height%2; h++) {
+        Slab top(width, h);
+        auto bottom{splitHorizontally(h)};
+
+        auto sizeFilterT = [&](auto price){ return price[0] <=top.getHeight() && price[1] <= top.getWidth(); };
+        auto sizeFilterB = [&](auto price){ return price[0] <=bottom.value().getHeight() && price[1] <= bottom.value().getWidth(); };
+
+        money = std::max(money, top.findOptimalCuts(prices) + (bottom ? bottom.value().findOptimalCuts(prices) : 0));
+    }
+    return money;
+}
+
 long long Slab::findOptimalPartition(std::vector<std::vector<int>>& prices) const {
     long long money{0};
 
     for (const auto& price: std::ranges::views::filter(prices, [&](auto price){ return price[0] <=height && price[1] <= width; })) {
-        money = std::max({money, cut(price, prices)});
+        money = std::max({money, partition(price, prices)});
     }
 
     return money;
 }
 
-long long Slab::cut(const std::vector<int>& price, std::vector<std::vector<int>>& prices) const {
+long long Slab::partition(const std::vector<int>& price, std::vector<std::vector<int>>& prices) const {
     auto priceHeight{price[0]};
     auto priceWidth{price[1]};
     auto pricePrice{price[2]};
