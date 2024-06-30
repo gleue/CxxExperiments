@@ -6,6 +6,8 @@
 class Solution {
 public:
     long long sellingWood(int m, int n, std::vector<std::vector<int>>& prices) {
-        return Slab(n, m).findOptimalPartition(prices);
+        Slab::reset();
+        // return Slab(n, m).findOptimalPartition(prices);
+        return Slab(n, m).findOptimalCuts(prices);
     }
 };
