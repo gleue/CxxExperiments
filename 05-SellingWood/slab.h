@@ -9,7 +9,8 @@ class Slab final {
     int width{0};
     int height{0};
 
-    static std::unordered_map<int, long long> cache;
+    static std::unordered_map<int, long long> moneyCache;
+    static std::unordered_map<int, long long> priceCache;
 
 public:
 
@@ -21,7 +22,7 @@ public:
     long long findOptimalCuts(const std::vector<std::vector<int>>& prices) const;
     long long findOptimalPartition(std::vector<std::vector<int>>& prices) const;
 
-    static inline void reset() { cache.clear(); }
+    static void reset(const std::vector<std::vector<int>>& prices);
 
 private:
 
@@ -29,6 +30,9 @@ private:
     long long cutHorizontally(const std::vector<std::vector<int>>& prices) const;
 
     long long partition(const std::vector<int>& price, std::vector<std::vector<int>>& prices) const;
+
+    /// Returns price exactly matching this slab's size or 0.
+    long long findPrice(const std::vector<std::vector<int>>& prices) const;
 
     /// Splits this slab vertically at given x position (0 = left) returning the remaining rest-slab if any.
     std::optional<Slab> splitVertically(int x) const;

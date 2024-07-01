@@ -7,21 +7,27 @@ namespace {
     inline int sizeToIndex(int w, int h) { return (h << 8) + w; }
 }
 
-std::unordered_map<int, long long> Slab::cache{};
+std::unordered_map<int, long long> Slab::moneyCache{};
+std::unordered_map<int, long long> Slab::priceCache{};
+
+void Slab::reset(const std::vector<std::vector<int>>& prices) {
+    moneyCache.clear();
+    priceCache.clear();
+
+    for (const auto& price: prices) {
+        priceCache[sizeToIndex(price[1], price[0])] = price[2];
+    }
+}
 
 long long Slab::findOptimalCuts(const std::vector<std::vector<int>>& prices) const {
-    if (auto item = cache.find(sizeToIndex(width, height)); item != cache.end()) {
+    if (auto item = moneyCache.find(sizeToIndex(width, height)); item != moneyCache.end()) {
         return item->second;
     }
 
-    long long money{0};
-
-    if (auto match = std::find_if(prices.begin(), prices.end(), [&](const auto& price){ return price[0] == height && price[1] == width; }); match != prices.end()) {
-        money = (*match)[2];
-    }
+    long long money{findPrice(prices)};
     
-    cache[sizeToIndex(width, height)] = std::max({money, width > 1 ? cutVertically(prices) : 0, height > 1 ? cutHorizontally(prices) : 0});
-    return cache[sizeToIndex(width, height)];
+    moneyCache[sizeToIndex(width, height)] = std::max({money, width > 1 ? cutVertically(prices) : 0, height > 1 ? cutHorizontally(prices) : 0});
+    return moneyCache[sizeToIndex(width, height)];
 }
 
 long long Slab::cutVertically(const std::vector<std::vector<int>>& prices) const {
@@ -30,9 +36,6 @@ long long Slab::cutVertically(const std::vector<std::vector<int>>& prices) const
     for (int w = 1; w <= width/2 + width%2; w++) {
         Slab left(w, height);
         auto right{splitVertically(w)};
-
-        auto sizeFilterL = [&](auto price){ return price[0] <=left.getHeight() && price[1] <= left.getWidth(); };
-        auto sizeFilterR = [&](auto price){ return price[0] <=right.value().getHeight() && price[1] <= right.value().getWidth(); };
 
         money = std::max(money, left.findOptimalCuts(prices) + (right ? right.value().findOptimalCuts(prices) : 0));
     }
@@ -45,9 +48,6 @@ long long Slab::cutHorizontally(const std::vector<std::vector<int>>& prices) con
     for (int h = 1; h <= height/2 + height%2; h++) {
         Slab top(width, h);
         auto bottom{splitHorizontally(h)};
-
-        auto sizeFilterT = [&](auto price){ return price[0] <=top.getHeight() && price[1] <= top.getWidth(); };
-        auto sizeFilterB = [&](auto price){ return price[0] <=bottom.value().getHeight() && price[1] <= bottom.value().getWidth(); };
 
         money = std::max(money, top.findOptimalCuts(prices) + (bottom ? bottom.value().findOptimalCuts(prices) : 0));
     }
@@ -101,6 +101,16 @@ long long Slab::partition(const std::vector<int>& price, std::vector<std::vector
 
         return moneyS + moneyR;
     }
+}
+
+long long Slab::findPrice(const std::vector<std::vector<int>>& prices) const {
+    if (auto match = priceCache.find(sizeToIndex(width, height)); match != priceCache.end()) {
+        return match->second;
+    }
+    // if (auto match = std::find_if(prices.begin(), prices.end(), [&](const auto& price){ return price[0] == height && price[1] == width; }); match != prices.end()) {
+    //     return (*match)[2];
+    // }
+    return 0;
 }
 
 std::optional<Slab> Slab::splitVertically(int x) const {
