@@ -34,7 +34,7 @@ For details see [05-SellingWood/README.md](05-SellingWood/README.md)
 
 ## 06-N_Back
 
-Kata from ...
+Kata from [Clean Code Developer School](https://ccd-school.de/coding-dojo/application-katas/n-back/).
 
 For details see [06-N_Back/README.md](06-N_Back/README.md)
 

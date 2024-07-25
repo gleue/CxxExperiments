@@ -1,6 +1,6 @@
 # N-Back
 
-Kata from ...
+Kata from [Clean Code Developer School](https://ccd-school.de/coding-dojo/application-katas/n-back/).
 
 ## Requirements
 
@@ -20,4 +20,5 @@ Kata from ...
 
 ## Resources
 
-- ...
+- [Clean Code Developer School](https://ccd-school.de/coding-dojo/application-katas/n-back/)
+- [Wikipedia](https://de.wikipedia.org/wiki/N-back)
