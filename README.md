@@ -32,6 +32,12 @@ Kata from [leetcode.com](https://leetcode.com/problems/selling-pieces-of-wood/).
 
 For details see [05-SellingWood/README.md](05-SellingWood/README.md)
 
+## 06-N_Back
+
+Kata from ...
+
+For details see [06-N_Back/README.md](06-N_Back/README.md)
+
 ## More to come...
 
 ## Requirements
