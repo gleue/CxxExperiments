@@ -38,6 +38,12 @@ Kata from [Clean Code Developer School](https://ccd-school.de/coding-dojo/applic
 
 For details see [06-N_Back/README.md](06-N_Back/README.md)
 
+## 07-Constness
+
+An investigation of the different flavors of const'ness -- constexpr, consteval, constinit.
+
+For details see [07-Constness](07-Constness/README.md)
+
 ## More to come...
 
 ## Requirements
