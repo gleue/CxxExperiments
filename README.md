@@ -44,6 +44,10 @@ An investigation of the different flavors of const'ness -- constexpr, consteval,
 
 For details see [07-Constness](07-Constness/README.md)
 
+## 08-Templates
+
+For details see [08-Templates](08-Templates/README.md)
+
 ## More to come...
 
 ## Requirements
