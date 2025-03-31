@@ -5,7 +5,7 @@ This exercise is as an investigation of the [Ranges library](https://en.cpprefer
 ## Requirements
 
 - C++ compiler supporting C++23, e.g. Gcc 13
-- [CMake](https://cmake.org) >= 3.5
+- [CMake](https://cmake.org) >= 3.10
 
 ## Building
 

@@ -5,7 +5,7 @@ Kata from [Clean Code Developer School](https://ccd-school.de/coding-dojo/applic
 ## Requirements
 
 - C++ compiler supporting C++20
-- [CMake](https://cmake.org) >= 3.5
+- [CMake](https://cmake.org) >= 3.10
 
 ## Building
 

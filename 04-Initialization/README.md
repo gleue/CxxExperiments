@@ -5,7 +5,7 @@ How to provide an initial value to variables.
 ## Requirements
 
 - C++ compiler supporting C++20
-- [CMake](https://cmake.org) >= 3.5
+- [CMake](https://cmake.org) >= 3.10
 
 ## Building
 

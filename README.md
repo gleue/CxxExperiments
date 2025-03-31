@@ -52,7 +52,7 @@ For details see [08-Templates](08-Templates/README.md)
 
 ## Requirements
 
-- [CMake](https://cmake.org) >= 3.5
+- [CMake](https://cmake.org) >= 3.10
 - plus project specific requirements
 
 ## Building

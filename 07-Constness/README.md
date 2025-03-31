@@ -5,7 +5,7 @@ An investigation of the different flavors of const'ness.
 ## Requirements
 
 - C++ compiler supporting C++20
-- [CMake](https://cmake.org) >= 3.5
+- [CMake](https://cmake.org) >= 3.10
 
 ## Building
 

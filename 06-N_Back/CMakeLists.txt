@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.5)
+cmake_minimum_required (VERSION 3.10)
 project (n_back)
 
 add_executable(n_back main.cpp NBackTest.cpp NBackSequence.cpp)

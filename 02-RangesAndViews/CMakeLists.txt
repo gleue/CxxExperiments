@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.5)
+cmake_minimum_required (VERSION 3.10)
 project (ranges_and_views)
 
 add_executable(ranges_and_views ranges_and_views.cpp)

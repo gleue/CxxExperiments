@@ -5,7 +5,7 @@ This exercise is as an investigation of move semantics especially in C++20 and l
 ## Requirements
 
 - C++ compiler supporting C++20
-- [CMake](https://cmake.org) >= 3.5
+- [CMake](https://cmake.org) >= 3.10
 
 ## Building
 
