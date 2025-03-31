@@ -48,6 +48,10 @@ For details see [07-Constness](07-Constness/README.md)
 
 For details see [08-Templates](08-Templates/README.md)
 
+## 09-Coroutines
+
+For details see [09-Coroutines](09-Coroutines/README.md)
+
 ## More to come...
 
 ## Requirements
@@ -82,7 +86,7 @@ For details see [08-Templates](08-Templates/README.md)
 This code is published under [The MIT License](https://opensource.org/license/mit/):
 
 ```
-Copyright 2024 Tim Gleue <tim@gleue-interactive.com>
+Copyright 2025 Tim Gleue <tim@gleue-interactive.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the “Software”), to deal in
