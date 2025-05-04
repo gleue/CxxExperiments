@@ -52,6 +52,12 @@ For details see [08-Templates](08-Templates/README.md)
 
 For details see [09-Coroutines](09-Coroutines/README.md)
 
+## 10-CakeMachine
+
+A Kata about multithreading & concurrency.
+
+For details see [10-CakeMachine](10-CakeMachine/README.md)
+
 ## More to come...
 
 ## Requirements
