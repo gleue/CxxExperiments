@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
         auto newTotal = total.getCount();
         auto delta = newTotal - curTotal;
         auto reportTime = std::chrono::high_resolution_clock::now();
-        std::cout << " " << prep << " > " << bake << " >" << pack << " = Total: " << newTotal << " (+" << delta << ")";
+        std::cout << " " << prep << " > " << bake << " > " << pack << " = Total: " << newTotal << " (+" << delta << ")";
         curTotal = newTotal;
         
         auto durationSinceStart = std::chrono::duration<double>(reportTime - startTime);
