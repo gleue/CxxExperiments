@@ -13,7 +13,7 @@ Kata from [leetcode.com](https://leetcode.com/problems/selling-pieces-of-wood/).
 
 ## Running
 
-- Run the sample tool
+- Run the solution
   ```console
   $ <build-dir>/05-SellingWood/sell_wood
   ```
