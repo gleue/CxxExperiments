@@ -2,6 +2,15 @@
 
 A Kata about multithreading & concurrency inspired by https://github.com/aimenux/CakeMachineKata.
 
+## Performance estimations
+
+- Sequential processing: [5 - 8]s + 10s + 2s = [17 - 20]s per cake --> [3 - 3.5] cakes per minute
+- Parallel processing:
+  - Preparation: [5 - 8]s per cake --> [7.5 - 12] cakes per minute --> @3 workers: [22.5 - 36] cakes per minute
+  - Baking: 10s per cake --> 6 cakes per minute --> @5 workers: 30 cakes per minute
+  - Packaging: 2s per cake --> 30 cakes per minute --> @2 workers: 60 cakes per minute
+  - TOTAL: min([22.5-36], 30, 60) cakes per minute --> [22.5 - 30] per minute
+
 ## Requirements
 
 - C++ compiler supporting C++20
