@@ -3,6 +3,7 @@
 #include "Shelf.h"
 
 #include <chrono>
+#include <functional>
 #include <iostream>
 #include <thread>
 #include <vector>
@@ -25,7 +26,7 @@ public:
                 while(true) {
                     if (input) input->pop(1);
                     ++count;
-                    std::this_thread::sleep_for(timer());
+                    std::this_thread::sleep_for(std::invoke(timer));
                     if (output) {
                         output->push(1);
                         --count;
