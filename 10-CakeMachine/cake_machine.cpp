@@ -41,13 +41,23 @@ int main(int argc, char* argv[]) {
     Workstation<1, decltype(outTimer)> total("Total", shelf3, nullptr, outTimer);
 
     puts("Working...");
-    for (std::size_t i = 0; ; i++) {
-        if (i % reportInterval) {
-            std::cout << "." << std::flush;
-        } else {
-            std::cout << "\n" << prep << "\t" << bake << "\t" << pack << "\tTotal: " << total.getCount() << " ";
+    auto startTime = std::chrono::high_resolution_clock::now();
+    std::size_t curTotal = 0;
+    while (true) {
+        for (std::size_t i = 0; i < reportInterval; std::this_thread::sleep_for(1s), i++) {
+            std::cout << ((i % 10) ? "." : ":") << std::flush;
         }
-        std::this_thread::sleep_for(1s);
+
+        auto newTotal = total.getCount();
+        auto delta = newTotal - curTotal;
+        auto reportTime = std::chrono::high_resolution_clock::now();
+        std::cout << " " << prep << " > " << bake << " >" << pack << " = Total: " << newTotal << " (+" << delta << ")";
+        curTotal = newTotal;
+        
+        auto durationSinceStart = std::chrono::duration<double>(reportTime - startTime);
+        auto factor = 60s / durationSinceStart;
+        auto throughput = double(curTotal) * factor;
+        std::cout << " [" << throughput << "/m]\n";
     }
 
     return 0;
