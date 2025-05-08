@@ -5,7 +5,7 @@ Kata from [leetcode.com](https://leetcode.com/problems/selling-pieces-of-wood/).
 ## Requirements
 
 - C++ compiler supporting C++20
-- [CMake](https://cmake.org) >= 3.10
+- [CMake](https://cmake.org) >= 4.0
 
 ## Building
 

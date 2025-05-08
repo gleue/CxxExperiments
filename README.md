@@ -62,7 +62,7 @@ For details see [10-CakeMachine](10-CakeMachine/README.md)
 
 ## Requirements
 
-- [CMake](https://cmake.org) >= 3.10
+- [CMake](https://cmake.org) >= 4.0
 - plus project specific requirements
 
 ## Building

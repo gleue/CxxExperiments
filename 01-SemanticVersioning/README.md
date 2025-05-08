@@ -7,7 +7,7 @@ Comparing version infos seemed a good use case. See [semver.org](https://semver.
 ## Requirements
 
 - C++ compiler supporting C++20 (I use [clang](https://clang.llvm.org), others should work but have not been tested)
-- [CMake](https://cmake.org) >= 3.10
+- [CMake](https://cmake.org) >= 4.0
 
 ## Building
 

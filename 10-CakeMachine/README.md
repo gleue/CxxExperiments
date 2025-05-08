@@ -14,7 +14,7 @@ A Kata about multithreading & concurrency inspired by https://github.com/aimenux
 ## Requirements
 
 - C++ compiler supporting C++20
-- [CMake](https://cmake.org) >= 3.10
+- [CMake](https://cmake.org) >= 4.0
 
 ## Building
 
