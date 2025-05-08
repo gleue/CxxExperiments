@@ -1,5 +1,5 @@
-cmake_minimum_required (VERSION 3.10)
-project (initialization)
+cmake_minimum_required(VERSION 4.0)
+project(initialization)
 
 add_executable(initialization initialization.cpp)
 

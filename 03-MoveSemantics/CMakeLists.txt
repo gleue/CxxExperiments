@@ -1,5 +1,5 @@
-cmake_minimum_required (VERSION 3.10)
-project (move_semantics)
+cmake_minimum_required(VERSION 4.0)
+project(move_semantics)
 
 add_executable(move_semantics move_semantics.cpp)
 

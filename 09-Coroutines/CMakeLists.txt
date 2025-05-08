@@ -1,5 +1,5 @@
-cmake_minimum_required (VERSION 3.10)
-project (card_dealer)
+cmake_minimum_required(VERSION 4.0)
+project(card_dealer)
 
 add_executable(card_dealer card_dealer.cpp)
 

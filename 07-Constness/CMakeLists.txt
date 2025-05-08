@@ -1,5 +1,5 @@
-cmake_minimum_required (VERSION 3.10)
-project (constness)
+cmake_minimum_required(VERSION 4.0)
+project(constness)
 
 add_executable(constness main.cpp)
 
