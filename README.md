@@ -58,6 +58,12 @@ A Kata about multithreading & concurrency.
 
 For details see [10-CakeMachine](10-CakeMachine/README.md)
 
+## 11-ThreadPools
+
+An exploration how to implement threads pools and use them within Qt applications.
+
+For details see [11-ThreadPools](11-ThreadPools/README.md)
+
 ## More to come...
 
 ## Requirements
