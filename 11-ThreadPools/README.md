@@ -1,6 +1,6 @@
 # Thread Pools (and Qt)
 
-An exploration how to implement threads pools and use them within Qt applications.
+An exploration how to implement thread pools and use them in a Qt applications.
 
 ## Requirements
 
@@ -13,4 +13,13 @@ An exploration how to implement threads pools and use them within Qt application
 
 ## Running
 
+Run the sample Qt application:
+```console
+$ <build-dir>/11-ThreadPools/threadpools
+```
+
 ## Resources
+
+- [cppreference.com: Concurrency support library](https://cppreference.com/w/cpp/atomic.html)
+- [BS::thread_pool](https://github.com/bshoshany/thread-pool)
+- [QThreadPool](https://doc.qt.io/qt-6/qthreadpool.html)
