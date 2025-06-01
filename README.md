@@ -76,10 +76,10 @@ For details see [10-CakeMachine](10-CakeMachine/README.md)
   $ cd <repo-dir>
   $ cmake -S . -B <build-dir>
   ```
-  Alternatively using GCC 14 installed via [Homebrew](https://brew.sh) on macOS:
+  Alternatively using GCC 15 installed via [Homebrew](https://brew.sh) on macOS:
   ```console
   $ brew install gcc
-  $ cmake -S . -B ./build -D CMAKE_C_COMPILER=$(brew --prefix gcc)/bin/gcc-14 -D CMAKE_CXX_COMPILER=$(brew --prefix gcc)/bin/g++-14
+  $ cmake -S . -B ./build -D CMAKE_C_COMPILER=$(brew --prefix gcc)/bin/gcc-15 -D CMAKE_CXX_COMPILER=$(brew --prefix gcc)/bin/g++-15
   ```
 
 - Build the project
