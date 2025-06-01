@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 4.0)
-project(ranges_and_views)
-
 add_executable(ranges_and_views ranges_and_views.cpp)
 
 target_compile_features(ranges_and_views PUBLIC cxx_std_23)

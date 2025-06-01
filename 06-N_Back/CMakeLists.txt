@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 4.0)
-project(n_back)
-
 add_executable(n_back main.cpp NBackTest.cpp NBackSequence.cpp)
 
 target_compile_features(n_back PUBLIC cxx_std_20)
