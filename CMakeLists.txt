@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 4.0)
 project(CxxExpriments)
 
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+
 add_subdirectory(01-SemanticVersioning)
 add_subdirectory(02-RangesAndViews)
 add_subdirectory(03-MoveSemantics)
@@ -11,3 +13,4 @@ add_subdirectory(07-Constness)
 # uses make: add_subdirectory(08-Templates)
 add_subdirectory(09-Coroutines)
 add_subdirectory(10-CakeMachine)
+add_subdirectory(11-ThreadPools)
