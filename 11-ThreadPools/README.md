@@ -13,6 +13,11 @@ An exploration how to implement thread pools and use them in a Qt applications.
 
 ## Running
 
+Run the sample application:
+```console
+$ <build-dir>/11-ThreadPools/pool -t <number of tasks> -s <sleep period>
+```
+
 Run the sample Qt application:
 ```console
 $ <build-dir>/11-ThreadPools/threadpools
