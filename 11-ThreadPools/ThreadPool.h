@@ -25,12 +25,15 @@ class ThreadPool {
 
     ~ThreadPool();
 
-    template<typename Func, typename... Args>
-    auto addTask(Func&& func, Args&&... args) -> std::future<std::invoke_result_t<Func, Args...>> {
-        using ReturnType = std::invoke_result_t<Func, Args...>;
+    std::size_t numThreads() const { return threads.size(); }
+
+    template<typename Func>
+        requires std::invocable<Func>
+    auto addTask(Func&& func) -> std::future<std::invoke_result_t<Func>> {
+        using ReturnType = std::invoke_result_t<Func>;
         using TaskType = std::packaged_task<ReturnType()>;
 
-        TaskType newTask(std::bind(std::forward<Func>(func), std::forward<Args>(args)...));
+        TaskType newTask(std::forward<Func>(func));
         auto future = newTask.get_future();
 
         {

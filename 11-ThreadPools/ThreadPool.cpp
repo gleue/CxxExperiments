@@ -2,19 +2,28 @@
 
 ThreadPool::ThreadPool(std::size_t numThreads): maxThreads(numThreads) {
     for (std::size_t i = 0; i < maxThreads; ++i) {
-        threads.emplace_back([this, i]() {
-            while (!stopAll.stop_requested()) {
+        // Create new thread and add it to the pool
+        threads.emplace_back([this]() {
+            for (auto token = stopAll.get_token(); !token.stop_requested();) {
                 Task nextTask;
                 {
+                    // Use this scope to unlock mutex after task extraction
                     std::unique_lock<std::mutex> lock(mutex);
 
-                    if (tasks.empty()) taskAvailable.wait(lock, [this]() { return !tasks.empty() || stopAll.stop_requested(); });
-                    if (stopAll.stop_requested()) return;
+                    if (tasks.empty()) {
+                        // Wait for available tasks or stop request
+                        taskAvailable.wait(lock, [this, token]() {
+                            return !tasks.empty() || token.stop_requested();
+                        });
+                    }
+                    // If stop requested terminate the thread
+                    if (token.stop_requested()) return;
 
-                    nextTask = std::move(tasks.front()) ;
+                    // Extract the next task
+                    nextTask = std::move(tasks.front());
                     tasks.pop_front();
                 }
-
+                // Execute the task
                 nextTask();
             }
         });
