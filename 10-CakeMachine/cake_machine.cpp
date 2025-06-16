@@ -1,7 +1,8 @@
 #include "Workstation.h"
 
+#include "../shared/mygetopt.h"
+
 #include <chrono>
-#include <getopt.h>
 #include <iostream>
 #include <random>
 

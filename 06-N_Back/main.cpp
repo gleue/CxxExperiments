@@ -1,8 +1,9 @@
 #include "NBackTest.h"
 
+#include "../shared/mygetopt.h"
+
 #include <cstring>
 #include <iostream>
-#include <getopt.h>
 
 #define DEFAULT_LENGTH 20
 #define DEFAULT_MILLIS 500
