@@ -1,8 +1,9 @@
 #include "ThreadPool.h"
 
+#include "../shared/mygetopt.h"
+
 #include <atomic>
 #include <chrono>
-#include <getopt.h>
 #include <iostream>
 #include <latch>
 #include <ranges>

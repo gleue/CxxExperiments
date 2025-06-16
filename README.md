@@ -69,7 +69,33 @@ For details see [11-ThreadPools](11-ThreadPools/README.md)
 ## Requirements
 
 - [CMake](https://cmake.org) >= 4.0
-- plus project specific requirements
+- [gcc](https://gcc.gnu.org/) >= 13
+- Plus project specific requirements:
+  - for 11-ThreadPools:
+    - [Qt 6](https://qt.io) >= 6.7.3
+    - [Conan](https://conan.io) >= 2 (on Windows)
+
+### Installing gcc
+
+On macOS installed via [Homebrew](https://brew.sh):
+```console
+$ brew install gcc
+```
+
+### Installing Qt
+
+On macOS:
+```console
+$ brew install qt6
+```
+
+On Windows:
+- Install Conan 2 via [conan.io](https://docs.conan.io/2/installation.html)
+- Install Qt 6 using Conan
+  ```console
+  conan install --build missing --profile:all .\conanprofile_windows.txt --output_folder .\build .\conanfile.txt
+  set Qt6_DIR=.\build
+  ```
 
 ## Building
 
@@ -82,7 +108,7 @@ For details see [11-ThreadPools](11-ThreadPools/README.md)
   $ cd <repo-dir>
   $ cmake -S . -B <build-dir>
   ```
-  Alternatively using GCC 15 installed via [Homebrew](https://brew.sh) on macOS:
+  Alternatively using GCC 15 on macOS:
   ```console
   $ brew install gcc
   $ cmake -S . -B ./build -D CMAKE_C_COMPILER=$(brew --prefix gcc)/bin/gcc-15 -D CMAKE_CXX_COMPILER=$(brew --prefix gcc)/bin/g++-15
