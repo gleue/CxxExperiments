@@ -36,10 +36,9 @@ class ThreadPool {
         TaskType newTask(std::forward<Func>(func));
         auto future = newTask.get_future();
 
-        {
-            std::scoped_lock<std::mutex> lock(mutex);
-            tasks.emplace_back(std::move(newTask));
-        }
+        std::scoped_lock<std::mutex> lock(mutex);
+
+        tasks.emplace_back(std::move(newTask));
         taskAvailable.notify_one();
         return future;
     }
