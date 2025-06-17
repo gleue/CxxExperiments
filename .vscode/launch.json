@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run pool",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/11-ThreadPools/pool",
+            "args": [
+                "--sleep", "20",
+                "--tasks", "10"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
+        {
+            "name": "Run ThreadPools",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/11-ThreadPools/threadpools",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
+        }
+    ]
+}
