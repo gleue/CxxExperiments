@@ -5,16 +5,20 @@
 #include <iostream>
 #include <string>
 
+#ifdef _MSC_VER
+#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
 #define LOG_FUNCTION std::cout << "* " << __PRETTY_FUNCTION__ << "\n"
 
 class BaseMessage {
 
-    static std::size_t lastID;
+  static std::size_t lastID;
 
 protected:
 
-    std::size_t id;
-    std::string recipient{};
+  std::size_t id;
+  std::string recipient{};
 
 public:
 
@@ -29,27 +33,27 @@ public:
 
     // Copy operations
     //
-    // Have to be user-declared, too, since we also
-    // have user-declared move operations (see below),
-    // and they would otherwise be deleted.
-    BaseMessage(const BaseMessage& msg);
-    BaseMessage& operator= (const BaseMessage& msg);
+  // Have to be user-declared, too, since we also
+  // have user-declared move operations (see below),
+  // and they would otherwise be deleted.
+  BaseMessage(const BaseMessage& msg);
+  BaseMessage& operator= (const BaseMessage& msg);
 
-    // Move operations
-    //
-    // They are both user-declared since we want to
-    // reset the moved from message's members.
-    BaseMessage(BaseMessage&& msg);
-    BaseMessage& operator= (BaseMessage&& msg);
+  // Move operations
+  //
+  // They are both user-declared since we want to
+  // reset the moved from message's members.
+  BaseMessage(BaseMessage&& msg);
+  BaseMessage& operator= (BaseMessage&& msg);
 
-    // Accessors
-    inline void resetID() { id = ++BaseMessage::lastID; }
-    inline std::string getRecipient() const { return recipient; }
-    inline void setRecipient(const std::string& rcpt) { recipient = rcpt; }
-    inline void setRecipient(std::string&& rcpt) { recipient = std::move(rcpt); }
+  // Accessors
+  inline void resetID() { id = ++BaseMessage::lastID; }
+  inline std::string getRecipient() const { return recipient; }
+  inline void setRecipient(const std::string& rcpt) { recipient = rcpt; }
+  inline void setRecipient(std::string&& rcpt) { recipient = std::move(rcpt); }
 
-    // Output
-    friend std::ostream& operator<< (std::ostream& ostr, const BaseMessage& msg);
+  // Output
+  friend std::ostream& operator<< (std::ostream& ostr, const BaseMessage& msg);
 };
 
 template<class T, std::size_t N>
@@ -79,10 +83,10 @@ public:
         BaseMessage(std::move(rcpt)),
         body(std::move(bdy)) {
         LOG_FUNCTION;
-    }
+  }
 
-    // Copy operations
-    //
+  // Copy operations
+  //
     // Have to be user-declared, too, since we also
     // have user-declared move operations (see below),
     // and they would otherwise be deleted.
@@ -90,11 +94,11 @@ public:
     Message& operator= (const Message& msg) {
         BaseMessage::operator=(msg);
         LOG_FUNCTION;
-        body = msg.body;
-        return *this;
-    }
+    body = msg.body;
+    return *this;
+  }
 
-    // Move operations
+  // Move operations
     //
     // They are both user-declared since we want to
     // reset the message body in the moved from message.
@@ -102,21 +106,21 @@ public:
         LOG_FUNCTION;
         msg.body = std::array<T, N>{};
     }
-    Message& operator= (Message&& msg) {
-        BaseMessage::operator=(msg);
-        LOG_FUNCTION;
-        body = std::move(msg.body);
-        msg.body = std::array<T, N>{};
-        return *this;
-    }
+  Message& operator= (Message&& msg) {
+    BaseMessage::operator=(msg);
+    LOG_FUNCTION;
+    body = std::move(msg.body);
+    msg.body = std::array<T, N>{};
+    return *this;
+  }
 
-    // Accessors
-    inline void setBody(const std::array<T, N>& bdy) { body = bdy; }
-    inline void setBody(std::array<T, N>&& bdy) { body = std::move(bdy); }
+  // Accessors
+  inline void setBody(const std::array<T, N>& bdy) { body = bdy; }
+  inline void setBody(std::array<T, N>&& bdy) { body = std::move(bdy); }
 
-    // Output
-    friend std::ostream& operator<< (std::ostream& ostr, const Message& msg) {
-        ostr << static_cast<const BaseMessage&>(msg) << ": " << msg.body.size() << " bytes [ " << msg.body << ']';
-        return ostr;
-    }
+  // Output
+  friend std::ostream& operator<< (std::ostream& ostr, const Message& msg) {
+    ostr << static_cast<const BaseMessage&>(msg) << ": " << msg.body.size() << " bytes [ " << msg.body << ']';
+    return ostr;
+  }
 };

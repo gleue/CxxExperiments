@@ -1,6 +1,6 @@
 #include "City.h"
 
-#include <getopt.h>
+#include "../shared/mygetopt.h"
 
 #include <algorithm>
 #include <fstream>

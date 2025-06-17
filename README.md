@@ -81,6 +81,10 @@ For details see [10-CakeMachine](10-CakeMachine/README.md)
   $ brew install gcc
   $ cmake -S . -B ./build -D CMAKE_C_COMPILER=$(brew --prefix gcc)/bin/gcc-15 -D CMAKE_CXX_COMPILER=$(brew --prefix gcc)/bin/g++-15
   ```
+  Or using Visual Studio 2022 on Windows:
+  ```console
+  $ cmake -S . -B ./build -G "Visual Studio 17 2022" -D CMAKE_GENERATOR_INSTANCE="C:\Program Files\Microsoft Visual Studio\2022\Professional"
+  ```
 
 - Build the project
   ```console
