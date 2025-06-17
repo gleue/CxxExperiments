@@ -41,10 +41,10 @@ int parseArguments(int argc, char* argv[]) {
             case 'h':
                 usage(argv[0]);
                 exit(0);
-            case 'c':
+            case 't':
                 numberOfTasks = std::clamp(atoi(optarg), 1, 100);
                 break;
-            case 'r':
+            case 's':
                 sleepInterval = std::clamp(atoi(optarg), 1, 60);
                 break;
             case '?':
