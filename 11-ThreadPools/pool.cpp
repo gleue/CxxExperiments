@@ -2,14 +2,20 @@
 
 #include "../shared/mygetopt.h"
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <iostream>
 #include <latch>
+#include <mutex>
 #include <ranges>
+#include <string>
+#include <sstream>
+#include <thread>
+#include <vector>
 
 
-const int defaultNumberOfTasks = 2 * std::thread::hardware_concurrency();
+const int defaultNumberOfTasks = std::thread::hardware_concurrency() << 1; // double the number of threads
 const int defaultSleepInterval = 4;
 
 auto numberOfTasks = defaultNumberOfTasks;
@@ -57,16 +63,26 @@ int parseArguments(int argc, char* argv[]) {
 }
 
 std::mutex clogmutex;
+std::atomic_int taskCount = 0;
 
 void printTaskInfo(int taskId, const std::string& message) {
     std::scoped_lock lock(clogmutex);
     std::clog << "Task " << taskId << " (on thread " << std::this_thread::get_id() << ") " << message << "\n";
 }
 
-auto addTask(ThreadPool& threadPool, std::latch& latch, std::size_t seconds = 4) -> std::future<int>
+template<typename T>
+void printTaskResult(int taskId, std::future<T>& future)
 {
-    static std::atomic_int taskCount = 0;
+    try {
+        auto result = future.get();
+        std::clog << "Task " << taskId << " completed with result: " << result << " ms\n";
+    } catch (const std::exception& e) {
+        std::cerr << "Task " << taskId << " failed: " << e.what() << "\n";
+    }
+}
 
+auto addIntTask(ThreadPool& threadPool, std::latch& latch, std::size_t seconds = 4) -> std::future<int>
+{
     return threadPool.addTask([seconds, taskId=taskCount++, &latch]() -> int {
         printTaskInfo(taskId, "started");
         auto begin = std::chrono::steady_clock::now();
@@ -83,10 +99,29 @@ auto addTask(ThreadPool& threadPool, std::latch& latch, std::size_t seconds = 4)
     });
 }
 
+auto addStringTask(ThreadPool& threadPool, std::latch& latch, std::size_t seconds = 4) -> std::future<std::string>
+{
+    return threadPool.addTask([seconds, taskId=taskCount++, &latch]() -> std::string {
+        printTaskInfo(taskId, "started");
+        auto begin = std::chrono::steady_clock::now();
+
+        // Simulate a long-running task by sleeping for a specified number of seconds
+        std::this_thread::sleep_for(std::chrono::seconds(seconds));
+
+        auto end = std::chrono::steady_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+        printTaskInfo(taskId, "finished");
+
+        latch.count_down();
+        std::stringstream ss;
+        ss << duration.count() << std::ends;
+        return ss.str();
+    });
+}
+
 int main(int argc, char *argv[])
 {
     auto index = parseArguments(argc, argv);
-
     if (argc - optind != 0) {
         usage(argv[0]);
         return 1;
@@ -97,25 +132,31 @@ int main(int argc, char *argv[])
     ThreadPool threadPool(maxThreads);
 
     std::latch barrier(numberOfTasks);
-    std::vector<std::future<int>> futures;
+    std::vector<std::future<int>> intFutures;
+    std::vector<std::future<std::string>> stringFutures;
     for (std::size_t i = 0; i < numberOfTasks; ++i) {
         std::scoped_lock lock(clogmutex);
-        std::clog << "Adding task " << i << " to the pool\n";
-        futures.emplace_back(addTask(threadPool, barrier, sleepInterval));
+        if (i % 2 == 0) {
+            std::clog << "Adding int task " << i << " to the pool\n";
+            intFutures.emplace_back(addIntTask(threadPool, barrier, sleepInterval));
+        } else {            
+            std::clog << "Adding string task " << i << " to the pool\n";
+            stringFutures.emplace_back(addStringTask(threadPool, barrier, sleepInterval));
+        }
     }
 
     std::clog << "Waiting for tasks to complete...\n";
     barrier.wait();
     std::clog << "All tasks have finished\n";
 
-    for (auto [index, future]: std::views::enumerate(futures)) {
-        try {
-            auto result = future.get();
-            std::clog << "Task " << index << " completed in: " << std::chrono::milliseconds(result) << "\n";
-        } catch (const std::exception& e) {
-            std::cerr << "Task failed: " << e.what() << "\n";
+    for (std::size_t i = 0; i < numberOfTasks; ++i) {
+        if (i % 2 == 0) {
+            printTaskResult(i, intFutures[i >> 1]);
+        } else {
+            printTaskResult(i, stringFutures[i >> 1]);
         }
     }
+    
     std::clog << "Destroying thread pool\n";
 }
  
