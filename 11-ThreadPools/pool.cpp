@@ -9,8 +9,8 @@
 #include <ranges>
 
 
-constexpr int defaultNumberOfTasks = 16;
-constexpr int defaultSleepInterval = 4;
+const int defaultNumberOfTasks = 2 * std::thread::hardware_concurrency();
+const int defaultSleepInterval = 4;
 
 auto numberOfTasks = defaultNumberOfTasks;
 auto sleepInterval = defaultSleepInterval;
@@ -60,10 +60,10 @@ std::mutex clogmutex;
 
 void printTaskInfo(int taskId, const std::string& message) {
     std::scoped_lock lock(clogmutex);
-    std::clog << "Task " << taskId << " (" << std::this_thread::get_id() << ") " << message << "\n";
+    std::clog << "Task " << taskId << " (on thread " << std::this_thread::get_id() << ") " << message << "\n";
 }
 
-auto addTask(ThreadPool& threadPool, std::latch& latch, std::size_t seconds = 5) -> std::future<int>
+auto addTask(ThreadPool& threadPool, std::latch& latch, std::size_t seconds = 4) -> std::future<int>
 {
     static std::atomic_int taskCount = 0;
 
@@ -92,14 +92,15 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    std::clog << "Creating thread pool\n";
-    ThreadPool threadPool(std::thread::hardware_concurrency());
+    auto maxThreads = std::thread::hardware_concurrency();
+    std::clog << "Creating thread pool with " << maxThreads << " threads \n";
+    ThreadPool threadPool(maxThreads);
 
     std::latch barrier(numberOfTasks);
     std::vector<std::future<int>> futures;
     for (std::size_t i = 0; i < numberOfTasks; ++i) {
         std::scoped_lock lock(clogmutex);
-        std::clog << "Adding task " << i + 1 << " to the pool\n";
+        std::clog << "Adding task " << i << " to the pool\n";
         futures.emplace_back(addTask(threadPool, barrier, sleepInterval));
     }
 

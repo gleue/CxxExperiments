@@ -89,7 +89,11 @@
         "future": "cpp",
         "cinttypes": "cpp",
         "barrier": "cpp",
-        "latch": "cpp"
+        "latch": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "stdfloat": "cpp"
     },
     "C_Cpp.default.compilerPath": "/usr/bin/clang++"
 }
