@@ -93,7 +93,7 @@ On Windows:
 - Install Conan 2 via [conan.io](https://docs.conan.io/2/installation.html)
 - Install Qt 6 using Conan
   ```console
-  conan install --build missing --profile:all .\conanprofile_windows.txt --output_folder .\build .\conanfile.txt
+  conan install --build missing --profile:all .\conanprofile_windows.txt --output-folder .\build .\conanfile.txt
   set Qt6_DIR=.\build
   ```
 
