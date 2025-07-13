@@ -18,39 +18,40 @@ class Progress;
  */
 class ProgressView : public QWidget {
 
-    Q_OBJECT
+  Q_OBJECT
 
-    QLabel *progressLabel;
-    QProgressBar *progressBar;
-    QPushButton *cancelButton;
-    QGridLayout *layout;
+    QLabel* progressLabel;
+  QProgressBar* progressBar;
+  QPushButton* cancelButton;
+  QGridLayout* gridLayout;
 
-    std::shared_ptr<Progress> progress;
+  std::shared_ptr<Progress> progress;
 
 public:
 
-    /**
-     * Constructs a ProgressView with the given progress object.
-     * @param progress A shared pointer to the Progress object to monitor.
-     * @param parent The parent widget.
-     */
-    explicit ProgressView(std::shared_ptr<Progress> progress, QWidget *parent = nullptr);
+  /**
+   * Constructs a ProgressView with the given progress object.
+   * @param progress A shared pointer to the Progress object to monitor.
+   * @param parent The parent widget.
+   */
+  explicit ProgressView(std::shared_ptr<Progress> progress, QWidget* parent = nullptr);
 
-    std::shared_ptr<Progress> getProgress() const { return progress; }
+  std::shared_ptr<Progress> getProgress() const { return progress; }
 
-    /// @brief Sets the label text format for the progress bar.
-    void setLabelFormat(const QString &format) { progressBar->setFormat(format); }
+  /// @brief Sets the label text format for the progress bar.
+  void setLabelFormat(const QString& format) { progressBar->setFormat(format); }
 
-    /// @brief Sets the range for the progress bar.
-    void setProgressRange(int min, int max) { progressBar->setRange(min, max); }
+  /// @brief Sets the range for the progress bar.
+  void setProgressRange(int min, int max) { progressBar->setRange(min, max); }
+
 signals:
 
-    /// @brief Signal emitted when the task is done (i.e. either completed or cancelled).
-    void taskDone();
+  /// @brief Signal emitted when the task is done (i.e. either completed or cancelled).
+  void taskDone();
 
 private slots:
 
-    void onProgressChanged(double value);
-    void onStatusChanged(ProgressStatus status);
-    void onCancelButtonClicked();
+  void onProgressChanged(double value);
+  void onStatusChanged(ProgressStatus status);
+  void onCancelButtonClicked();
 };

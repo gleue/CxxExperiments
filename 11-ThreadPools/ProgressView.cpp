@@ -5,16 +5,16 @@ ProgressView::ProgressView(std::shared_ptr<Progress> progressPtr, QWidget* paren
   progressLabel(new QLabel(this)),
   progressBar(new QProgressBar(this)),
   cancelButton(new QPushButton(tr("Cancel"), this)),
-  layout(new QGridLayout(this)),
+  gridLayout(new QGridLayout(this)),
   progress(std::move(progressPtr)) {
 
   progressBar->setTextVisible(false);
   cancelButton->setEnabled(false);
 
-  layout->addWidget(progressLabel, 0, 0, 1, 2);
-  layout->addWidget(progressBar, 1, 0, 1, 1);
-  layout->addWidget(cancelButton, 1, 1, 1, 1);
-  setLayout(layout);
+  gridLayout->addWidget(progressLabel, 0, 0, 1, 2);
+  gridLayout->addWidget(progressBar, 1, 0, 1, 1);
+  gridLayout->addWidget(cancelButton, 1, 1, 1, 1);
+  setLayout(gridLayout);
 
   connect(progress.get(), &Progress::progressChanged, this, &ProgressView::onProgressChanged);
   connect(progress.get(), &Progress::statusChanged, this, &ProgressView::onStatusChanged);
