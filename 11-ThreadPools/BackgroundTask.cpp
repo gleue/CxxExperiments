@@ -3,11 +3,11 @@
 #include "Progress.h"
 #include "ThreadPool.h"
 
-bool BackgroundTask::run(std::function<void(BackgroundTask&)> threadFunction, ThreadPool& threadPool) {
+bool BackgroundTask::run(std::function<void()> threadFunction, ThreadPool& threadPool) {
   if (!progress->start()) return false;
 
   threadPool.addTask([this, threadFunction]() {
-    threadFunction(*this);
+    threadFunction();
     if (!progress->isCancelled()) progress->complete();
     });
   return true;

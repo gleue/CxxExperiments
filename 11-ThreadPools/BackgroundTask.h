@@ -35,7 +35,7 @@ public:
    * @param threadPool The thread pool to run the task in.
    * @return True if the task was successfully started, false otherwise.
    */
-  bool run(std::function<void(BackgroundTask&)> threadFunction, ThreadPool& threadPool);
+  bool run(std::function<void()> threadFunction, ThreadPool& threadPool);
 
   /// @brief Checks if the task is done (either completed or cancelled).
   bool isDone() const;
