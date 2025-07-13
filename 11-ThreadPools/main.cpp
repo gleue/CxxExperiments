@@ -13,6 +13,7 @@
 #include <chrono> 
 #include <iostream>
 #include <list>
+#include <memory>
 #include <random>
 #include <sstream>
 #include <string>
@@ -21,7 +22,7 @@
 
 // Global thread pool and task pool
 ThreadPool threadPool(std::jthread::hardware_concurrency());
-std::list<BackgroundTask*> taskPool;
+std::list<std::shared_ptr<BackgroundTask>> taskPool;
 
 // Global random number generator
 std::random_device randomSeed;
@@ -34,26 +35,26 @@ std::mt19937 rnGenerator(randomSeed());
  * @param iterations The number of iterations for the task.
  * @return A tuple containing the BackgroundTask pointer and the function being executed.
  */
-std::tuple<BackgroundTask*, std::function<void(BackgroundTask&)> > createTask(int iterations) {
-  auto task = taskPool.emplace_back(new BackgroundTask());
+std::tuple< std::shared_ptr<BackgroundTask>, std::function<void()> > createTask(int iterations) {
+  auto task = taskPool.emplace_back(std::make_shared<BackgroundTask>());
   auto progress = task->getProgress();
   progress->setTotal(iterations);
 
-  auto function = [iterations](const BackgroundTask& task) -> void {
+  auto function = [iterations, task]() {
     std::clog << "Task started in thread: " << std::this_thread::get_id() << std::endl;
 
     // Simulate a long-running task
     auto remainingIterations = iterations;
-    for (; !task.isCancelled() && remainingIterations >= 1; remainingIterations--) {
+    for (; !task->isCancelled() && remainingIterations >= 1; remainingIterations--) {
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
-      task.getProgress()->increment();
+      task->getProgress()->increment();
     }
 
-    if (task.isCancelled()) {
+    if (task->isCancelled()) {
       std::clog << "Task cancelled in thread: " << std::this_thread::get_id() << " with " << remainingIterations << " iterations remaining." << std::endl;
     }
     else {
-      task.getProgress()->complete();
+      task->getProgress()->complete();
       std::clog << "Task completed in thread: " << std::this_thread::get_id() << std::endl;
     }
     };
@@ -69,10 +70,8 @@ std::tuple<BackgroundTask*, std::function<void(BackgroundTask&)> > createTask(in
 void onTaskDone(ProgressView* progressView)
 {
   const auto progress = progressView->getProgress();
-
   if (auto task = std::ranges::find_if(taskPool, [progress](auto t) { return t->getProgress() == progress; }); task != taskPool.end()) {
     taskPool.erase(task);
-    delete* task;
   }
 
   progressView->deleteLater();
