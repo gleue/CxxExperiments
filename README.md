@@ -64,7 +64,11 @@ An exploration how to implement threads pools and use them within Qt application
 
 For details see [11-ThreadPools](11-ThreadPools/README.md)
 
-## More to come...
+## 12-DateTime
+
+An exploration in C++ std::chrono date and time library.
+
+For details see [12-DateTime](12-DateTime/README.md)
 
 ## Requirements
 
@@ -74,6 +78,8 @@ For details see [11-ThreadPools](11-ThreadPools/README.md)
   - for 11-ThreadPools:
     - [Qt 6](https://qt.io) >= 6.7.3
     - [Conan](https://conan.io) >= 2 (on Windows)
+  - for 12-DateTime
+    - [FTXUI](https://github.com/ArthurSonzogni/FTXUI) == 6.1.9
 
 ### Installing gcc
 
@@ -82,16 +88,16 @@ On macOS installed via [Homebrew](https://brew.sh):
 $ brew install gcc
 ```
 
-### Installing Qt
+### Installing 3rd party dependencies
 
 On macOS:
 ```console
-$ brew install qt6
+$ brew install qt6 ftxui
 ```
 
 On Windows:
 - Install Conan 2 via [conan.io](https://docs.conan.io/2/installation.html)
-- Install Qt 6 using Conan
+- Install dependencies using Conan
   ```console
   conan install --build missing --profile:all .\conanprofile_windows.txt --output-folder .\build .\conanfile.txt
   set Qt6_DIR=.\build
