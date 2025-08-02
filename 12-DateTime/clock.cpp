@@ -88,7 +88,7 @@ void draw_clockhand(float value, Color color, Canvas& canvas, int w, int h, floa
     canvas.DrawPointLine(w >> 1, h >> 1, x, y, color);
 }
 
-void run_clock(ScreenInteractive& screen, int radius) {
+void show_clock(ScreenInteractive& screen, int radius) {
   auto clock = Renderer([&] {
     auto w = (radius << 1) - 5;
     auto h = (radius << 1) - 9;
@@ -99,7 +99,7 @@ void run_clock(ScreenInteractive& screen, int radius) {
     c.DrawPointLine(w, h, 0, h);
     c.DrawPointLine(0, h, 0, 0);
 
-    // A circle using braille characters.
+    // A circle using braille characters
     c.DrawPointCircle(w >> 1, h >> 1, (w >> 1) - clock_margin);
 
     // Hour marks
@@ -155,15 +155,17 @@ int main(int argc, char* argv[]) {
       return 1;
   }
 
-  //auto screen = ScreenInteractive::FixedSize(clock_size, clock_size >> 1);
+  // Initialize screen
   auto screen = ScreenInteractive::FitComponent();
   screen.TrackMouse(false);
 
+  // Launch periodic update thread & draw clock
   auto result = std::async(std::launch::async, update_clock, std::ref(screen));
+  show_clock(screen, clock_size);
 
-  run_clock(screen, clock_size);
+  // Stop thread and clean up
   stop_update = true;
-
   screen.Clear();
+
   return 0;
 }
