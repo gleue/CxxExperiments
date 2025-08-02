@@ -14,6 +14,7 @@
 #include <functional>
 #include <future>
 #include <iostream>
+#include <locale>
 #include <memory>
 #include <string>
 #include <utility>
@@ -102,22 +103,32 @@ void show_clock(ScreenInteractive& screen, int radius) {
     // A circle using braille characters
     c.DrawPointCircle(w >> 1, h >> 1, (w >> 1) - clock_margin);
 
+    // Date complication
+    const std::chrono::zoned_time<std::chrono::system_clock::duration> local_now{ std::chrono::current_zone(), std::chrono::system_clock::now() };
+    const std::chrono::year_month_day local_date{ std::chrono::floor<std::chrono::days>(local_now.get_local_time()) };
+    const auto date{ std::format("{:%a, %d. %B}", local_date) };
+
+    c.DrawText((w >> 1) - date.size(),
+               (h >> 1) + (h / 6),
+               date,
+               Color::White);
+
     // Hour marks
     for (int i = 1; i <= 12; ++i) {
-      double angle = i * (M_PI / 6) - 0.5 * M_PI;
-      int x = static_cast<int>((w >> 1) + ((w >> 1) - clock_margin - clock_padding) * cos(angle));
-      int y = static_cast<int>((h >> 1) + ((h >> 1) - clock_margin - clock_padding) * sin(angle));
+      const double angle = i * (M_PI / 6) - 0.5 * M_PI;
+      const int x = static_cast<int>((w >> 1) + ((w >> 1) - clock_margin - clock_padding) * cos(angle));
+      const int y = static_cast<int>((h >> 1) + ((h >> 1) - clock_margin - clock_padding) * sin(angle));
+
       Pixel p;
       p.character = std::format("{:d}", i);
       c.DrawPixel(x, y, p);
     }
 
     // Clock hands
-    std::chrono::zoned_time<std::chrono::system_clock::duration> local_now{ std::chrono::current_zone(), std::chrono::system_clock::now() };
-    auto hh_mm_ss = std::chrono::hh_mm_ss<std::chrono::system_clock::duration>(local_now.get_local_time().time_since_epoch());
-    auto sec = static_cast<float>(hh_mm_ss.seconds().count() % 60);
-    auto min = static_cast<float>(hh_mm_ss.minutes().count() % 60);
-    auto hrs = static_cast<float>(hh_mm_ss.hours().count() % 12);
+    const auto hh_mm_ss = std::chrono::hh_mm_ss<std::chrono::system_clock::duration>(local_now.get_local_time().time_since_epoch());
+    const auto sec = static_cast<float>(hh_mm_ss.seconds().count() % 60);
+    const auto min = static_cast<float>(hh_mm_ss.minutes().count() % 60);
+    const auto hrs = static_cast<float>(hh_mm_ss.hours().count() % 12);
 
     draw_clockhand<12.0f>(hrs + min / 60.0, Color::White, c, w, h, 0.5);
     draw_clockhand<60.0f>(min + sec / 60.0, Color::White, c, w, h, 0.9);
